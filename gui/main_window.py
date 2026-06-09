@@ -40,19 +40,13 @@ class MainWindow(ctk.CTk):
             input_frame,
             text="No Input Excel Selected"
         )
-        self.input_label.pack(
-            side="left",
-            padx=10
-        )
+        self.input_label.pack(side="left", padx=10)
 
         ctk.CTkButton(
             input_frame,
             text="Browse Excel",
             command=self.select_input
-        ).pack(
-            side="right",
-            padx=10
-        )
+        ).pack(side="right", padx=10)
 
         # Output Folder
 
@@ -63,21 +57,15 @@ class MainWindow(ctk.CTk):
             output_frame,
             text="No Output Folder Selected"
         )
-        self.output_label.pack(
-            side="left",
-            padx=10
-        )
+        self.output_label.pack(side="left", padx=10)
 
         ctk.CTkButton(
             output_frame,
             text="Browse Folder",
             command=self.select_output_folder
-        ).pack(
-            side="right",
-            padx=10
-        )
+        ).pack(side="right", padx=10)
 
-        # Progress
+        # Progress Bar
 
         self.progress = ctk.CTkProgressBar(self)
         self.progress.pack(
@@ -85,7 +73,6 @@ class MainWindow(ctk.CTk):
             padx=20,
             pady=20
         )
-
         self.progress.set(0)
 
         self.status_label = ctk.CTkLabel(
@@ -102,10 +89,7 @@ class MainWindow(ctk.CTk):
             height=45,
             command=self.start_processing
         )
-
-        self.start_button.pack(
-            pady=20
-        )
+        self.start_button.pack(pady=20)
 
         # Logs
 
@@ -125,7 +109,7 @@ class MainWindow(ctk.CTk):
 
         self.logs.insert(
             "end",
-            text + "\n"
+            str(text) + "\n"
         )
 
         self.logs.see("end")
@@ -135,7 +119,7 @@ class MainWindow(ctk.CTk):
     def select_input(self):
 
         file_path = filedialog.askopenfilename(
-            title="Select Excel File",
+            title="Select Input Excel",
             filetypes=[
                 ("Excel Files", "*.xlsx")
             ]
@@ -183,6 +167,10 @@ class MainWindow(ctk.CTk):
 
             return
 
+        self.start_button.configure(
+            state="disabled"
+        )
+
         threading.Thread(
             target=self.process,
             daemon=True
@@ -192,7 +180,23 @@ class MainWindow(ctk.CTk):
 
         try:
 
-            self.progress.set(0.05)
+            timestamp = datetime.now().strftime(
+                "%Y%m%d_%H%M%S"
+            )
+
+            output_excel = os.path.join(
+                self.output_folder,
+                f"results_{timestamp}.xlsx"
+            )
+
+            self.log("")
+            self.log("================================")
+            self.log("JOB STARTED")
+            self.log("================================")
+            self.log(f"Input : {self.input_excel}")
+            self.log(f"Output: {output_excel}")
+
+            self.progress.set(0.10)
 
             chrome_running = False
 
@@ -211,7 +215,13 @@ class MainWindow(ctk.CTk):
             except:
                 pass
 
-            if not chrome_running:
+            if chrome_running:
+
+                self.log(
+                    "Chrome Debug Already Running"
+                )
+
+            else:
 
                 self.log(
                     "Starting Chrome Debug..."
@@ -225,35 +235,23 @@ class MainWindow(ctk.CTk):
 
                 time.sleep(5)
 
-            self.progress.set(0.15)
+                self.log(
+                    "Chrome Started"
+                )
+
+            self.progress.set(0.30)
 
             messagebox.showinfo(
                 "SIDH Login",
-                "Login SIDH and Open Enrollment Page.\n\nClick OK after opening the Enrollment page."
+                "Login SIDH and open Enrollment Page.\n\nThen click OK."
             )
 
-            timestamp = datetime.now().strftime(
-                "%Y%m%d_%H%M%S"
-            )
+            self.progress.set(0.50)
 
-            output_excel = os.path.join(
-                self.output_folder,
-                f"results_{timestamp}.xlsx"
-            )
+            self.log("SIDH Ready")
+            self.log("Starting Excel Processing...")
 
-            self.log("")
-            self.log("================================")
-            self.log("STARTING PROCESS")
-            self.log("================================")
-            self.log(
-                f"Input : {self.input_excel}"
-            )
-            self.log(
-                f"Output : {output_excel}"
-            )
-            self.log("")
-
-            self.progress.set(0.30)
+            self.progress.set(0.70)
 
             process_excel(
                 self.input_excel,
@@ -267,12 +265,26 @@ class MainWindow(ctk.CTk):
                 text="Completed"
             )
 
+            self.log("")
+            self.log("================================")
+            self.log("PROCESS COMPLETED")
+            self.log("================================")
+            self.log(f"Output Saved : {output_excel}")
+
+            self.start_button.configure(
+                state="normal"
+            )
+
             messagebox.showinfo(
                 "Success",
                 f"Processing Completed\n\n{output_excel}"
             )
 
         except Exception as e:
+
+            self.start_button.configure(
+                state="normal"
+            )
 
             messagebox.showerror(
                 "Error",
