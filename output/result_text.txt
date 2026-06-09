@@ -1,0 +1,67 @@
+×
+A&A Process
+Back ×
+Training Centre
+Location Change Requests
+Allocated Targets
+Payment/Refund List
+Schemes
+Back ×
+Apply Skilling Program
+My Skilling Program
+Apply PMKVY Proposal
+PMKVY Proposal
+Back ×
+Batches
+Back ×
+Batches
+Payout Batches
+Monitoring Batches
+Courses
+Back ×
+Candidates
+Back ×
+Candidates Registration
+Certificate & Marksheet
+Others
+Back ×
+Employers
+Assessment Agency
+Trainer
+A&A Process
+Schemes
+PMKVY Proposal
+Batches
+Courses
+Candidates
+Others
+ TP321264
+Home
+Batches
+HigherEd
+Batch Information
+Enrollment
+Candidates Attendance
+Assessment & Certification
+Placement & Tracking
+Enrollment
+Candidate Interest
+Candidate List
+SELECT FOR ENROLLMENT
+Select Registration Type
+General Registration
+EKYC Candidate
+Select Enrollment Type
+Yes
+No
+APPLY
+RESET
+Only eKYC candidates
+ Sort 
+All Selected (0)
+DOWNLOAD CANDIDATES
+ENROLL
+	Candidate ID	Candidate Name	Gender	State	Mobile	Action
+
+	CAN_33998998	MONISHA RAJA	Female	TAMIL NADU	+91 XXXXXX3803	
+ENROLL
