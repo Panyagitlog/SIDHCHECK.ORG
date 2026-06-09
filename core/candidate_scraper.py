@@ -13,44 +13,68 @@ class CandidateScraper:
 
             self.page.bring_to_front()
 
+            # Clear mobile field
+
             mobile_input = self.page.get_by_placeholder(
                 "Search by Mobile No"
             )
 
             mobile_input.click()
-            mobile_input.fill("")
+
+            self.page.keyboard.press("Control+A")
+            self.page.keyboard.press("Backspace")
 
             mobile_input.fill(
                 str(mobile_no)
             )
+
+            # Click Apply
 
             self.page.get_by_role(
                 "button",
                 name="APPLY"
             ).click()
 
-            time.sleep(4)
+            print(f"Searching : {mobile_no}")
 
-            body_text = self.page.locator(
-                "body"
-            ).inner_text()
+            time.sleep(5)
 
-            match = re.search(
-                r"(CAN_\d+)\s+([A-Za-z .]+)",
-                body_text
-            )
+            tables = self.page.locator("table")
 
-            if match:
+            # Search all tables
 
-                can_id = match.group(1).strip()
+            for i in range(tables.count()):
 
-                sidh_name = match.group(2).strip()
+                try:
 
-                return {
-                    "found": True,
-                    "can_id": can_id,
-                    "sidh_name": sidh_name
-                }
+                    table_text = tables.nth(i).inner_text()
+
+                    match = re.search(
+                        r"(CAN_\d+)\s+([A-Za-z .]+?)\s+(Male|Female)",
+                        table_text,
+                        re.IGNORECASE
+                    )
+
+                    if match:
+
+                        can_id = match.group(1).strip()
+
+                        sidh_name = match.group(2).strip()
+
+                        print(
+                            f"Found : {can_id} | {sidh_name}"
+                        )
+
+                        return {
+                            "found": True,
+                            "can_id": can_id,
+                            "sidh_name": sidh_name
+                        }
+
+                except Exception:
+                    pass
+
+            print("Candidate Not Found")
 
             return {
                 "found": False,
@@ -60,7 +84,9 @@ class CandidateScraper:
 
         except Exception as e:
 
-            print(e)
+            print(
+                f"Scraper Error : {e}"
+            )
 
             return {
                 "found": False,
